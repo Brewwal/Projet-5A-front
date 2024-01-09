@@ -37,39 +37,40 @@
         <input type="file" name="file" accept=".csv" required>
         <button type="submit">Upload</button>
     </form>
-
-    {% if toanon %}
-    <h2>Données du fichier CSV</h2>
-    <form action="/process" method="post">
-        <table border="1">
-            <thead>
-                <tr>
-                    {% for column in toanon.columns %}
-                    <th>
-                        {{ column }}
-                        <select name="options[{{ loop.index0 }}]">
-                            <option value="k-anonymity">k-anonymity</option>
-                            <option value="pseudonymisation">Pseudonymisation</option>
-                            <option value="differential_privacy">Differential Privacy</option>
-                            <option value="delete">À Supprimer</option>
-                            <option value="modify">À Modifier</option>
-                        </select>
-                    </th>
+    {% if anon_state == True %}
+        {% if not toanon.empty %}
+        <h2>Données du fichier CSV</h2>
+        <form action="/process" method="post">
+            <table border="1">
+                <thead>
+                    <tr>
+                        {% for column in toanon.columns %}
+                        <th>
+                            {{ column }}
+                            <select name="options[{{ loop.index }}]">
+                                <option value="k-anonymity">k-anonymity</option>
+                                <option value="pseudonymisation">Pseudonymisation</option>
+                                <option value="differential_privacy">Differential Privacy</option>
+                                <option value="delete">À Supprimer</option>
+                                <option value="modify">À Modifier</option>
+                            </select>
+                        </th>
+                        {% endfor %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for index, row in toanon.iterrows() %}
+                    <tr>
+                        {% for value in row %}
+                        <td>{{ value }}</td>
+                        {% endfor %}
+                    </tr>
                     {% endfor %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for index, row in toanon.iterrows() %}
-                <tr>
-                    {% for value in row %}
-                    <td>{{ value }}</td>
-                    {% endfor %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <button type="submit">Valider</button>
-    </form>
+                </tbody>
+            </table>
+            <button type="submit">Valider</button>
+        </form>
+        {% endif %}
     {% endif %}
 </body>
 </html>
